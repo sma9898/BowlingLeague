@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Teams>
+
+<a asp-action="Index" asp-controller="Home" asp-route-teamnameid="">Home</a>
+<br />
+
+
+<!--Teams-->
+@foreach (var x in Model)
+{
+    <a asp-action="Index" asp-controller="Home" 
+       asp-route-teamnameid="@x.TeamId"
+       asp-route-teamname="@x.TeamName">@x.TeamName</a>
+    <br />
+}

@@ -1,6 +1,8 @@
+using BowlingLeague.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +26,10 @@ namespace BowlingLeague
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            //Add DbContext
+            services.AddDbContext<BowlingLeagueContext>(options =>
+               options.UseSqlite(Configuration["ConnectionStrings:BowlingLeagueDbConnection"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +54,11 @@ namespace BowlingLeague
 
             app.UseEndpoints(endpoints =>
             {
+                //Added endpoint
+                endpoints.MapControllerRoute("teamnameid",
+                    "TeamName/{teamnameid}/{teamname}",
+                    new { Controller = "Home", action = "Index" });
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
