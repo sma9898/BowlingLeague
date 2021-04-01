@@ -1,4 +1,5 @@
 ﻿using BowlingLeague.Models;
+using BowlingLeague.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -21,25 +22,41 @@ namespace BowlingLeague.Controllers
             context = ctx;
         }
 
-        public IActionResult Index(long? teamnameid, int pageNum = 0)
+        public IActionResult Index(long? teamnameid, string teamname, int pageNum = 0)
         {
             int pageSize = 5; //5 names per page
 
-            return View(context.Bowlers
-                .Where(m => m.TeamId == teamnameid || teamnameid == null)
-                .OrderBy(m => m.Team)
-                .Skip((pageNum-1) * pageSize)
-                .Take(pageSize)
-                .ToList());
-                /*
-                .FromSqlInterpolated($"SELECT * FROM Bowlers WHERE TeamId = {teamnameid} OR {teamnameid} IS NULL") //Can use regular SQL queries
-                .ToList()); 
-                */
+            return View(new IndexViewModel
+            {
+                Bowlers = (context.Bowlers
+                    .Where(m => m.TeamId == teamnameid || teamnameid == null)
+                    .OrderBy(m => m.Team)
+                    .Skip((pageNum - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList()),
 
-                /*Where(x => x.BowlerFirstName.Contains("Barbara"))
-                .OrderBy(x => x.BowlerLastName)
-                .ToList());*/
-        }
+                PageNumberingInfo = new PageNumberingInfo
+                {
+                    NumItemsPerPage = pageSize,
+                    CurrentPage = pageNum,
+
+                    //If no team has been selected, get the full count
+                    //Otherwise only count number from selected team
+                    TotalNumItems = (teamnameid == null ? context.Bowlers.Count() :
+                        context.Bowlers.Where(x => x.TeamId == teamnameid).Count())
+                },
+
+                TeamName = teamname
+            });
+            /*
+            .FromSqlInterpolated($"SELECT * FROM Bowlers WHERE TeamId = {teamnameid} OR {teamnameid} IS NULL") //Can use regular SQL queries
+            .ToList()); 
+            */
+
+            /*Where(x => x.BowlerFirstName.Contains("Barbara"))
+            .OrderBy(x => x.BowlerLastName)
+            .ToList());*/
+        } 
 
         public IActionResult Privacy()
         {

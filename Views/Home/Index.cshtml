@@ -2,10 +2,15 @@
     ViewData["Title"] = "Home Page";
 }
 
-@model IEnumerable<Bowlers>
+@model IndexViewModel
 
 <!--Loop list of Bowlers-->
-@foreach (var x in Model)
+@foreach (var x in Model.Bowlers)
 {
     <p>@x.BowlerFirstName</p>
 }
+
+<!--Pagination-->
+<div page-info="@Model.PageNumberingInfo" page-url-teamname="@Model.TeamName" >
+
+</div>
