@@ -20,6 +20,8 @@ namespace BowlingLeague.Components
         //Pass information
         public IViewComponentResult Invoke()
         {
+            ViewBag.SelectedTeam = RouteData?.Values["teamname"];
+
             return View(context.Teams
                 //.Select(x => x.TeamName)
                 .Distinct()

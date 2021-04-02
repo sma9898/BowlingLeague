@@ -34,7 +34,14 @@ namespace BowlingLeague.Infrastructure
         [HtmlAttributeNotBound]
         [ViewContext]
         public ViewContext ViewContext { get; set; }
-        
+
+        //Adding custom thingies from Bookstore
+        public bool PageClassesEnabled { get; set; } = false;
+        public string PageClass { get; set; }
+        public string PageClassNormal { get; set; }
+        public string PageClassSelected { get; set; }
+
+
         //Process
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -50,6 +57,14 @@ namespace BowlingLeague.Infrastructure
                 KeyValuePairs["pageNum"] = i;
 
                 individualTag.Attributes["href"] = urlHelp.Action("Index", KeyValuePairs);
+
+                //For the custom classes
+                if (PageClassesEnabled)
+                {
+                    individualTag.AddCssClass(PageClass);
+                    individualTag.AddCssClass(i == PageInfo.CurrentPage ? PageClassSelected : PageClassNormal);
+                }
+
                 individualTag.InnerHtml.Append(i.ToString());
 
                 finishedTag.InnerHtml.AppendHtml(individualTag);
